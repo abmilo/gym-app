@@ -1,6 +1,60 @@
+'use client'
 import Link from "next/link"
+import { register } from "@/api/users";
+import { useState } from 'react'
+
 
 export default function Register() {
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmedPassword, setConfirmedPassword] = useState("");
+
+    const emailRegex = new RegExp(/^[A-Za-z0-9_!#$%&'*+\/=?`{|}~^.-]*@pitt.edu+$/);
+    const passwordRegex = new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/);
+
+    const validate = async () => {
+        // email checks
+        const isValidEmail = emailRegex.test(email);
+        if (!isValidEmail) {
+            console.log("not a valid email")
+            return;
+        }
+
+        // password checks
+        const isValidPassword = passwordRegex.test(password);
+        if (!isValidPassword) {
+            console.log("Not a valid password.");
+            return;
+        }
+        if (password !== confirmedPassword) {
+            console.log("Passwords do not match");
+            return;
+        }
+
+        // passed data
+        const data = {
+            email,
+            password,
+        }
+
+        send(data);
+    }
+
+
+    const send = async (data) => {
+        const res = await register(data);
+        console.log(res);
+        if (res?.status === 201) {
+            console.log("success!")
+            // router.push("/login");
+        }
+        else {
+            console.log("error!")
+            return;
+        }
+    }
+
+
     return (
         <>
 
@@ -21,6 +75,9 @@ export default function Register() {
                                 </label>
                                 <div className="mt-2">
                                     <input
+                                        onChange={ (event) => {
+                                            setEmail(event?.target?.value)
+                                        } }
                                         id="email"
                                         name="email"
                                         type="email"
@@ -37,6 +94,9 @@ export default function Register() {
                                 </label>
                                 <div className="mt-2">
                                     <input
+                                        onChange={ (event) => {
+                                            setPassword(event?.target?.value)
+                                        } }
                                         id="password"
                                         name="password"
                                         type="password"
@@ -48,10 +108,13 @@ export default function Register() {
                             </div>
                             <div>
                                 <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
-                                    Re-type password
+                                    Confirm password
                                 </label>
                                 <div className="mt-2">
                                     <input
+                                        onChange={ (event) => {
+                                            setConfirmedPassword(event?.target?.value)
+                                        } }
                                         id="password"
                                         name="password"
                                         type="password"
@@ -66,6 +129,9 @@ export default function Register() {
 
                             <div>
                                 <button
+                                    onClick={ () => {
+                                        validate();
+                                    } }
                                     type="submit"
                                     className="flex w-full justify-center rounded-md bg-royal px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-gold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                                 >

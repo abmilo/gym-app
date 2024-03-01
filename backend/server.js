@@ -1,8 +1,15 @@
 const express = require('express');
 const app = express();
 const mongoose = require("mongoose");
-
+const cors = require("cors");
+const corsOptions = require("./config/corsOptions");
 require('dotenv').config();
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cors(corsOptions));
+
+
 const port = process.env.PORT || 3001;
 
 
@@ -16,7 +23,7 @@ mongoose
     .then(() => console.log("DB Connected!"));
 
 
-app.use('/user', require('./routes/users'));
+app.use('/users', require('./routes/users'));
 
 
 app.get('/', function (req, res) {

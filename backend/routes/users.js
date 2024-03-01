@@ -1,9 +1,9 @@
-// const express = require("express");
-// const router = express.Router();
-// require("dotenv").config();
-// const short = require('short-uuid');
-// const UserModel = require("../models/UserModel")
-// const bcrypt = require("bcrypt");
+const express = require("express");
+const router = express.Router();
+require("dotenv").config();
+const short = require('short-uuid');
+const UserModel = require("../models/UserModel")
+const bcrypt = require("bcrypt");
 // const jwt = require('jsonwebtoken');
 // const verifyJWT = require("../middleware/verifyJWT");
 // var Filter = require('bad-words'),
@@ -89,44 +89,38 @@
 // register user
 router.post('/register', async (req, res) => {
     try {
-        const { email, password, first, middle, last } = req.body;
+        const { email, password } = req.body;
 
-        const emailRegex = new RegExp(/^[A-Za-z0-9_!#$%&'*+\/=?`{|}~^.-]+@[A-Za-z0-9.-]+$/);
+        // check email and password against regex
+        const emailRegex = new RegExp(/^[A-Za-z0-9_!#$%&'*+\/=?`{|}~^.-]*@pitt.edu+$/);
         const passwordRegex = new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/);
 
         const isValidEmail = emailRegex.test(email);
         const isValidPassword = passwordRegex.test(password);
 
-
         if (!isValidEmail || !isValidPassword) return res.status(400).json({ message: "Email or Password not valid" });
 
 
+        // check duplicates
         const dup = await UserModel.findOne({ email: email });
         if (dup) {
             console.log("user already exists");
             return res.status(409).send({ message: "User with that email already exists." });
         }
+
+        // hash new user password
         const hashedPwd = await bcrypt.hash(password, parseInt(process.env.SALT));
 
-
+        // create and save new user with gathered info
         const newUser = new UserModel({
             email: email,
             password: hashedPwd,
-            firstName: first,
-            middleName: middle,
-            lastName: last,
-            fullName: `${first} ${middle ? middle + " " : ""}${last}`,
             joined: new Date(),
             uuid: short.generate()
         });
 
-
-
-
         newUser.save().then(() => {
-
             res.status(201).json({ message: "New User Successfully Saved" });
-
         },
             (err) => {
                 const errs = err?.errors
@@ -136,8 +130,6 @@ router.post('/register', async (req, res) => {
                 return;
 
             })
-
-
 
     }
     catch (err) {
@@ -299,4 +291,4 @@ router.post('/register', async (req, res) => {
 
 
 
-// module.exports = router;
+module.exports = router;
