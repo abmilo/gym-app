@@ -1,20 +1,30 @@
 const express = require('express');
 const app = express();
+const mongoose = require("mongoose");
+
 require('dotenv').config();
 const port = process.env.PORT || 3001;
 
-const { auth } = require('express-oauth2-jwt-bearer');
 
-const jwtCheck = auth({
-    audience: process.env.audience,
-    issuerBaseURL: process.env.issuerBaseURL,
-    tokenSigningAlg: process.env.tokenSigningAlg
+const dbURL =
+    process.env.MONGO_URL;
+
+mongoose
+    .connect(dbURL, {
+        dbName: 'proj1',
+    })
+    .then(() => console.log("DB Connected!"));
+
+
+app.use('/user', require('./routes/users'));
+
+
+app.get('/', function (req, res) {
+    res.send('home, unprotected');
 });
 
-// enforce on all endpoints
-app.use(jwtCheck);
 
-app.get('/authorized', function (req, res) {
+app.get('/auth', function (req, res) {
     res.send('Secured Resource');
 });
 

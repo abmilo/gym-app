@@ -1,6 +1,6 @@
 import Link from "next/link"
 
-export default function Login() {
+export default function Register() {
     return (
         <>
 
@@ -8,7 +8,7 @@ export default function Login() {
                 <div className="sm:mx-auto sm:w-full sm:max-w-md">
 
                     <h2 className="mt-6 text-center text-2xl font-bold leading-9 tracking-tight text-gold">
-                        Sign in to your account
+                        Register
                     </h2>
                 </div>
 
@@ -46,33 +46,30 @@ export default function Login() {
                                     />
                                 </div>
                             </div>
-
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center">
+                            <div>
+                                <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
+                                    Re-type password
+                                </label>
+                                <div className="mt-2">
                                     <input
-                                        id="remember-me"
-                                        name="remember-me"
-                                        type="checkbox"
-                                        className="h-4 w-4 rounded border-gray-300 text-gold focus:ring-gold"
+                                        id="password"
+                                        name="password"
+                                        type="password"
+                                        autoComplete="current-password"
+                                        required
+                                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                     />
-                                    <label htmlFor="remember-me" className="ml-3 block text-sm leading-6 text-gray-900">
-                                        Remember me
-                                    </label>
-                                </div>
-
-                                <div className="text-sm leading-6">
-                                    <a href="#" className="font-semibold text-royal hover:text-gold">
-                                        Forgot password?
-                                    </a>
                                 </div>
                             </div>
+
+
 
                             <div>
                                 <button
                                     type="submit"
                                     className="flex w-full justify-center rounded-md bg-royal px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-gold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                                 >
-                                    Sign in
+                                    Register
                                 </button>
                             </div>
                         </div>
@@ -81,9 +78,9 @@ export default function Login() {
                     </div>
 
                     <p className="mt-10 text-center text-sm text-gray-500">
-                        Don't have an account?{ ' ' }
-                        <Link href="/register" className="font-semibold leading-6 text-royal hover:text-gold">
-                            Create Account Here
+                        Already have an account?{ ' ' }
+                        <Link href="/login" className="font-semibold leading-6 text-royal hover:text-gold">
+                            Sign In Here
                         </Link>
                     </p>
                 </div>
