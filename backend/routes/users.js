@@ -86,65 +86,65 @@
 
 
 
-// // register user
-// router.post('/register', async (req, res) => {
-//     try {
-//         const { email, password, first, middle, last } = req.body;
+// register user
+router.post('/register', async (req, res) => {
+    try {
+        const { email, password, first, middle, last } = req.body;
 
-//         const emailRegex = new RegExp(/^[A-Za-z0-9_!#$%&'*+\/=?`{|}~^.-]+@[A-Za-z0-9.-]+$/);
-//         const passwordRegex = new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/);
+        const emailRegex = new RegExp(/^[A-Za-z0-9_!#$%&'*+\/=?`{|}~^.-]+@[A-Za-z0-9.-]+$/);
+        const passwordRegex = new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/);
 
-//         const isValidEmail = emailRegex.test(email);
-//         const isValidPassword = passwordRegex.test(password);
-
-
-//         if (!isValidEmail || !isValidPassword) return res.status(400).json({ message: "Email or Password not valid" });
+        const isValidEmail = emailRegex.test(email);
+        const isValidPassword = passwordRegex.test(password);
 
 
-//         const dup = await UserModel.findOne({ email: email });
-//         if (dup) {
-//             console.log("user already exists");
-//             return res.status(409).send({ message: "User with that email already exists." });
-//         }
-//         const hashedPwd = await bcrypt.hash(password, parseInt(process.env.SALT));
+        if (!isValidEmail || !isValidPassword) return res.status(400).json({ message: "Email or Password not valid" });
 
 
-//         const newUser = new UserModel({
-//             email: email,
-//             password: hashedPwd,
-//             firstName: first,
-//             middleName: middle,
-//             lastName: last,
-//             fullName: `${first} ${middle ? middle + " " : ""}${last}`,
-//             joined: new Date(),
-//             uuid: short.generate()
-//         });
+        const dup = await UserModel.findOne({ email: email });
+        if (dup) {
+            console.log("user already exists");
+            return res.status(409).send({ message: "User with that email already exists." });
+        }
+        const hashedPwd = await bcrypt.hash(password, parseInt(process.env.SALT));
 
 
-
-
-//         newUser.save().then(() => {
-
-//             res.status(201).json({ message: "New User Successfully Saved" });
-
-//         },
-//             (err) => {
-//                 const errs = err?.errors
-//                 const keys = Object.keys(err?.errors);
-//                 const msg = errs[keys[0]]?.properties?.message;
-//                 res.status(err.status || 400).json({ message: msg || err?.message });
-//                 return;
-
-//             })
+        const newUser = new UserModel({
+            email: email,
+            password: hashedPwd,
+            firstName: first,
+            middleName: middle,
+            lastName: last,
+            fullName: `${first} ${middle ? middle + " " : ""}${last}`,
+            joined: new Date(),
+            uuid: short.generate()
+        });
 
 
 
-//     }
-//     catch (err) {
-//         console.log(err);
-//         res.sendStatus(400);
-//     }
-// });
+
+        newUser.save().then(() => {
+
+            res.status(201).json({ message: "New User Successfully Saved" });
+
+        },
+            (err) => {
+                const errs = err?.errors
+                const keys = Object.keys(err?.errors);
+                const msg = errs[keys[0]]?.properties?.message;
+                res.status(err.status || 400).json({ message: msg || err?.message });
+                return;
+
+            })
+
+
+
+    }
+    catch (err) {
+        console.log(err);
+        res.sendStatus(400);
+    }
+});
 
 
 
