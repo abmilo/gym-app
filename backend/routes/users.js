@@ -4,85 +4,87 @@ require("dotenv").config();
 const short = require('short-uuid');
 const UserModel = require("../models/UserModel")
 const bcrypt = require("bcrypt");
-// const jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 // const verifyJWT = require("../middleware/verifyJWT");
 // var Filter = require('bad-words'),
 //     filter = new Filter();
 
 
 
-// router.post('/login', async (req, res) => {
-//     try {
-//         const { email, password } = req.body;
-//         if (!email || !password) {
-//             return res.status(400).json({ message: "Email AND password are necessary" });
-//         }
+router.post('/login', async (req, res) => {
 
-//         console.log(password)
-//         const account = await UserModel.findOne({ email: email });
+    try {
+        const { email, password } = req.body;
+        if (!email || !password) {
+            return res.status(400).json({ message: "Email AND password are necessary" });
+        }
 
-//         if (!account) return res.status(400).json({ message: "Account not found" });
+        const account = await UserModel.findOne({ email: email });
 
-//         const match = await bcrypt.compare(password, account?.password);
+        if (!account) return res.status(400).json({ message: "Account not found" });
 
-//         if (!match) return res.status(400).json({ message: "Incorrect Password" });
+        const match = await bcrypt.compare(password, account?.password);
 
-//         const tokenData = {
-//             uuid: account?.uuid,
-//             email: email,
-//         }
+        if (!match) return res.status(400).json({ message: "Incorrect Password" });
 
-//         const accessToken = jwt.sign(
-//             { ...tokenData },
-//             process.env.ACCESS_TOKEN_SECRET,
-//             { expiresIn: "15m" }
-//         );
+        const tokenData = {
+            uuid: account?.uuid,
+            email: email,
+        }
 
-//         const refreshToken = jwt.sign(
-//             { ...tokenData },
-//             process.env.REFRESH_TOKEN_SECRET,
-//             { expiresIn: "1hr" }
-//         );
+        const accessToken = jwt.sign(
+            { ...tokenData },
+            process.env.ACCESS_TOKEN_SECRET,
+            { expiresIn: "15m" }
+        );
 
-//         account.refreshToken = refreshToken;
-//         account.save().then(() => {
-//             console.log("New Refresh Token Saved");
-//         },
-//             (err) => {
-//                 console.log(err);
-//                 res.status(err.status || 400).json({ message: err.message });
-//                 return;
+        const refreshToken = jwt.sign(
+            { ...tokenData },
+            process.env.REFRESH_TOKEN_SECRET,
+            { expiresIn: "1hr" }
+        );
 
-//             })
+        account.refreshToken = refreshToken;
+        account.save().then(() => {
+            console.log("New Refresh Token Saved");
+        },
+            (err) => {
+                console.log(err);
+                res.status(err.status || 400).json({ message: err.message });
+                return;
 
-
-//         res.cookie("jwt", refreshToken, {
-//             httpOnly: true,
-//             secure: true,
-//             sameSite: "None",
-//             maxAge: 60 * 60 * 1000,
-//         });
-
-//         res.status(201).json({
-//             message: 'User Logged In',
-//             data: {
-//                 email: email,
-//                 accessToken: accessToken,
-//                 firstName: account?.firstName,
-//                 lastName: account?.lastName,
-//                 fullName: account?.fullName,
-//             }
-//         });
+            })
 
 
-//     }
-//     catch (err) {
-//         console.log(err);
-//         res.sendStatus(400);
-//     }
+        res.cookie("refreshjwt", refreshToken, {
+            httpOnly: true,
+            secure: true,
+            sameSite: "None",
+            maxAge: 60 * 60 * 1000,
+        });
+
+        res.cookie("accessjwt", accessToken, {
+            httpOnly: true,
+            secure: true,
+            sameSite: "None",
+            maxAge: 60 * 60 * 1000,
+        });
 
 
-// });
+
+        res.status(201).json({
+            message: 'User Logged In',
+        });
+
+
+    }
+    catch (err) {
+        console.log(err);
+        res.sendStatus(400);
+    }
+
+
+});
 
 
 
