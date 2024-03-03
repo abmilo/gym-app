@@ -2,7 +2,13 @@
 
 import axios from "axios";
 
-export default axios.create({ baseURL: process.env.NEXT_PUBLIC_BASE_URL });
+export default axios.create({
+    baseURL: process.env.NEXT_PUBLIC_BASE_URL,
+    headers: {
+        "Content-Type": "application/json",
+    }
+
+});
 
 
 // export const Axios = () => {
@@ -33,6 +39,7 @@ export default axios.create({ baseURL: process.env.NEXT_PUBLIC_BASE_URL });
 
 export const AxioPrivate = (auth) => {
 
+    const jwt = document.cookie.split('; ').find((row) => row.startsWith('accessjwt='))?.split('=')[1];
 
     const axiosPrivate = axios.create(
         {
@@ -46,7 +53,7 @@ export const AxioPrivate = (auth) => {
     axiosPrivate.interceptors.request.use(
         config => {
             if (!config.headers.Authorization) {
-                config.headers.Authorization = `Bearer ${auth?.accessToken}`;
+                config.headers.Authorization = `Bearer ${jwt}`;
             }
             return config;
 
@@ -54,20 +61,20 @@ export const AxioPrivate = (auth) => {
     );
 
 
-    axiosPrivate.interceptors.response.use(
-        (response) => response,
-        async (error) => {
-            const prevRequest = error?.config;
-            if (error?.response?.status === 403 && !prevRequest?.sent) {
-                prevRequest.sent = true;
-                const res = await refresh();
-                const newAccessToken = res?.data?.data?.accessToken;
-                prevRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-                return axiosPrivate(prevRequest);
-            }
-            return Promise.reject(error);
-        }
-    );
+    // axiosPrivate.interceptors.response.use(
+    //     (response) => response,
+    //     async (error) => {
+    //         const prevRequest = error?.config;
+    //         if (error?.response?.status === 403 && !prevRequest?.sent) {
+    //             prevRequest.sent = true;
+    //             const res = await refresh();
+    //             const newAccessToken = res?.data?.data?.accessToken;
+    //             prevRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+    //             return axiosPrivate(prevRequest);
+    //         }
+    //         return Promise.reject(error);
+    //     }
+    // );
 
     return axiosPrivate
 }

@@ -34,6 +34,7 @@ export default function Login() {
             // router.push("/login");
         }
         else {
+            // console.log(res);
             console.log("error!")
             return;
         }
@@ -61,9 +62,9 @@ export default function Login() {
                                 </label>
                                 <div className="mt-2">
                                     <input
-                                        onChange={(event) => {
+                                        onChange={ (event) => {
                                             setEmail(event?.target?.value)
-                                        }}
+                                        } }
                                         id="email"
                                         name="email"
                                         type="email"
@@ -80,9 +81,9 @@ export default function Login() {
                                 </label>
                                 <div className="mt-2">
                                     <input
-                                        onChange={(event) => {
+                                        onChange={ (event) => {
                                             setPassword(event?.target?.value)
-                                        }}
+                                        } }
                                         id="password"
                                         name="password"
                                         type="password"
@@ -115,9 +116,9 @@ export default function Login() {
 
                             <div>
                                 <button
-                                    onClick={() => {
+                                    onClick={ () => {
                                         validate();
-                                    }}
+                                    } }
                                     type="submit"
                                     className="flex w-full justify-center rounded-md bg-royal px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-gold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                                 >
@@ -130,7 +131,7 @@ export default function Login() {
                     </div>
 
                     <p className="mt-10 text-center text-sm text-gray-500">
-                        Don't have an account?{' '}
+                        Don't have an account?{ ' ' }
                         <Link href="/register" className="font-semibold leading-6 text-royal hover:text-gold">
                             Create Account Here
                         </Link>

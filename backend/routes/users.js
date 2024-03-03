@@ -5,7 +5,7 @@ const short = require('short-uuid');
 const UserModel = require("../models/UserModel")
 const bcrypt = require("bcrypt");
 const jwt = require('jsonwebtoken');
-// const verifyJWT = require("../middleware/verifyJWT");
+const verifyJWT = require("../middleware/verifyJWT");
 // var Filter = require('bad-words'),
 //     filter = new Filter();
 
@@ -70,13 +70,9 @@ router.post('/login', async (req, res) => {
             maxAge: 60 * 60 * 1000,
         });
 
-
-
         res.status(201).json({
             message: 'User Logged In',
         });
-
-
     }
     catch (err) {
         console.log(err);
@@ -196,28 +192,28 @@ router.post('/register', async (req, res) => {
 
 
 
-// router.get('/getUser', verifyJWT, async (req, res) => {
-//     try {
-//         console.log(req?.sent);
-//         const email = req?.email;
-//         if (!email) {
-//             console.log("Request does not have an auth header.")
-//             return res.send(401).json({ message: "Request does not have an email." });
-//         }
+router.get('/getUser', verifyJWT, async (req, res) => {
+    try {
+        console.log(req?.sent);
+        const email = req?.email;
+        if (!email) {
+            console.log("Request does not have an auth header.")
+            return res.send(401).json({ message: "Request does not have an email." });
+        }
 
-//         const account = await UserModel.findOne({ email: email }, { _id: 0, password: 0, uuid: 0, refreshToken: 0 });
-//         if (!account) return res.send(400).json({ message: "Account not found with given information." });
+        const account = await UserModel.findOne({ email: email }, { _id: 0, password: 0, uuid: 0, refreshToken: 0 });
+        if (!account) return res.send(400).json({ message: "Account not found with given information." });
 
 
 
-//         res.status(200).json(account);
+        res.status(200).json(account);
 
-//     }
-//     catch (err) {
-//         console.log(err);
-//         res.sendStatus(400);
-//     }
-// });
+    }
+    catch (err) {
+        console.log(err);
+        res.sendStatus(400);
+    }
+});
 
 
 
