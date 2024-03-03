@@ -37,9 +37,8 @@ export default axios.create({
 // }
 
 
-export const AxioPrivate = (auth) => {
+export const AxioPrivate = () => {
 
-    const jwt = document.cookie.split('; ').find((row) => row.startsWith('accessjwt='))?.split('=')[1];
 
     const axiosPrivate = axios.create(
         {

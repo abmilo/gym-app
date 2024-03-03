@@ -3,11 +3,12 @@ const app = express();
 const mongoose = require("mongoose");
 const cors = require("cors");
 const corsOptions = require("./config/corsOptions");
+const cookieParser = require('cookie-parser');
 require('dotenv').config();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-// app.use(cors());
+app.use(cookieParser);
 
 
 const port = process.env.PORT || 3001;

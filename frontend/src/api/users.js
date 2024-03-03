@@ -50,9 +50,8 @@ export const login = async (data) => {
 
 
 
-export const getUser = async (auth) => {
-    const axiosPrivate = AxioPrivate(auth);
-
+export const getUser = async () => {
+    const axiosPrivate = AxioPrivate();
     try {
         const res = await axiosPrivate.get(
             "/users/getUser",
@@ -60,10 +59,6 @@ export const getUser = async (auth) => {
                 withCredentials: true,
             }
         );
-
-        if (res?.config?.sent === true) {
-            return { res, toggleAuth: true }
-        }
 
         return res;
 

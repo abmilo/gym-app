@@ -194,7 +194,7 @@ router.post('/register', async (req, res) => {
 
 router.get('/getUser', verifyJWT, async (req, res) => {
     try {
-        console.log(req?.sent);
+
         const email = req?.email;
         if (!email) {
             console.log("Request does not have an auth header.")
