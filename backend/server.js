@@ -3,28 +3,21 @@ const app = express();
 const mongoose = require("mongoose");
 const cors = require("cors");
 const corsOptions = require("./config/corsOptions");
-const cookieParser = require('cookie-parser');
 require('dotenv').config();
+const cookieParser = require('cookie-parser')
 
+// apply initial middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser);
-
-
+// init port
 const port = process.env.PORT || 3001;
 
-
-const dbURL =
-    process.env.MONGO_URL;
-
-mongoose
-    .connect(dbURL, {
-        dbName: 'proj1',
-    })
-    .then(() => console.log("DB Connected!"));
+// connect to mongo db
+const dbURL = process.env.MONGO_URL;
+mongoose.connect(dbURL, { dbName: 'proj1', }).then(() => console.log("DB Connected!"));
 
 
-
+// attach proper headers
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
     res.header(
@@ -34,7 +27,15 @@ app.use((req, res, next) => {
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS');
     next();
 });
+app.use(cookieParser());
 
+
+// apply cors rules
+app.use(cors(corsOptions));
+
+
+
+// routes
 app.use('/users', require('./routes/users'));
 
 
@@ -48,6 +49,8 @@ app.get('/auth', function (req, res) {
 });
 
 
+
+// server listings
 app.listen(port, () => {
     console.log(`backend is running on port: ${port}`);
 })

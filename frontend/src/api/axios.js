@@ -1,4 +1,5 @@
 "use client"
+import { Refresh } from "./users";
 
 import axios from "axios";
 
@@ -37,7 +38,7 @@ export default axios.create({
 // }
 
 
-export const AxioPrivate = () => {
+export const AxioPrivate = (auth) => {
 
 
     const axiosPrivate = axios.create(
@@ -52,7 +53,7 @@ export const AxioPrivate = () => {
     axiosPrivate.interceptors.request.use(
         config => {
             if (!config.headers.Authorization) {
-                config.headers.Authorization = `Bearer ${jwt}`;
+                config.headers.Authorization = `Bearer ${auth.accessjwt}`;
             }
             return config;
 
@@ -60,20 +61,20 @@ export const AxioPrivate = () => {
     );
 
 
-    // axiosPrivate.interceptors.response.use(
-    //     (response) => response,
-    //     async (error) => {
-    //         const prevRequest = error?.config;
-    //         if (error?.response?.status === 403 && !prevRequest?.sent) {
-    //             prevRequest.sent = true;
-    //             const res = await refresh();
-    //             const newAccessToken = res?.data?.data?.accessToken;
-    //             prevRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-    //             return axiosPrivate(prevRequest);
-    //         }
-    //         return Promise.reject(error);
-    //     }
-    // );
+    axiosPrivate.interceptors.response.use(
+        (response) => response,
+        async (error) => {
+            const prevRequest = error?.config;
+            if (error?.response?.status === 403 && !prevRequest?.sent) {
+                prevRequest.sent = true;
+                const res = await Refresh();
+                const newAccessToken = res?.data?.data?.accessjwt;
+                prevRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+                return axiosPrivate(prevRequest);
+            }
+            return Promise.reject(error);
+        }
+    );
 
     return axiosPrivate
 }

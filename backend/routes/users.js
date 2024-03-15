@@ -35,15 +35,17 @@ router.post('/login', async (req, res) => {
         const accessToken = jwt.sign(
             { ...tokenData },
             process.env.ACCESS_TOKEN_SECRET,
-            { expiresIn: "15m" }
+            { expiresIn: "1m" }
         );
 
         const refreshToken = jwt.sign(
             { ...tokenData },
             process.env.REFRESH_TOKEN_SECRET,
-            { expiresIn: "1hr" }
+            { expiresIn: "10min" }
         );
 
+        uuid = account?.uuid;
+        joined = account?.joined;
         account.refreshToken = refreshToken;
         account.save().then(() => {
             console.log("New Refresh Token Saved");
@@ -72,6 +74,12 @@ router.post('/login', async (req, res) => {
 
         res.status(201).json({
             message: 'User Logged In',
+            data: {
+                accessjwt: accessToken,
+                email: email,
+                uuid: uuid,
+                joined: joined
+            }
         });
     }
     catch (err) {
@@ -138,57 +146,57 @@ router.post('/register', async (req, res) => {
 
 
 
-// router.get('/refresh', async (req, res) => {
-//     try {
+router.get('/refresh', async (req, res) => {
+    try {
+        // console.log("refresh called");
+        const cookies = req.cookies;
+        // console.log(req.cookies);
 
-//         const cookies = req.cookies;
+        if (!cookies?.refreshjwt) return res.sendStatus(401);
+        const refreshToken = cookies?.refreshjwt;
 
-//         if (!cookies?.jwt) return res.sendStatus(401);
-//         const refreshToken = cookies?.jwt;
+        const account = await UserModel.findOne({ refreshToken }).exec();
+        if (!account) return res.status(400).json({ message: "Could not verify account" });
 
-//         const account = await UserModel.findOne({ refreshToken }).exec();
-//         if (!account) return res.status(400).json({ message: "Could not verify account" });
-
-//         const tokenData = {
-//             uuid: account?.uuid,
-//             email: account?.email,
-//         }
-
-
-//         jwt.verify(
-//             refreshToken,
-//             process.env.REFRESH_TOKEN_SECRET,
-//             (err, decoded) => {
-//                 if (err || account.email !== decoded.email) {
-//                     return res.status(403).json({ message: "You do not have a valid token. Login again to recieve a new one.s" });
-
-//                 }
-//                 const accessToken = jwt.sign(
-//                     { ...tokenData },
-//                     process.env.ACCESS_TOKEN_SECRET,
-//                     { expiresIn: "15m" }
-//                 );
-//                 res.status(201).json({
-//                     message: 'User Token Refreshed',
-//                     data: {
-//                         email: account?.email,
-//                         accessToken: accessToken,
-//                         firstName: account?.firstName,
-//                         lastName: account?.lastName,
-//                         fullName: account?.fullName,
-//                     }
-//                 })
-//             }
-//         );
+        const tokenData = {
+            uuid: account?.uuid,
+            email: account?.email,
+        }
 
 
+        jwt.verify(
+            refreshToken,
+            process.env.REFRESH_TOKEN_SECRET,
+            (err, decoded) => {
+                if (err || account.email !== decoded.email) {
+                    return res.status(403).json({ message: "You do not have a valid token. Login again to recieve a new one." });
 
-//     }
-//     catch (err) {
-//         console.log(err);
-//         res.sendStatus(400);
-//     }
-// });
+                }
+                const accessToken = jwt.sign(
+                    { ...tokenData },
+                    process.env.ACCESS_TOKEN_SECRET,
+                    { expiresIn: "1m" }
+                );
+                res.status(201).json({
+                    message: 'User Token Refreshed',
+                    data: {
+                        accessjwt: accessToken,
+                        email: account?.email,
+                        uuid: account?.uuid,
+                        joined: account?.joined
+                    }
+                })
+            }
+        );
+
+
+
+    }
+    catch (err) {
+        console.log(err);
+        res.sendStatus(400);
+    }
+});
 
 
 
@@ -197,7 +205,6 @@ router.get('/getUser', verifyJWT, async (req, res) => {
 
         const email = req?.email;
         if (!email) {
-            console.log("Request does not have an auth header.")
             return res.send(401).json({ message: "Request does not have an email." });
         }
 
@@ -205,8 +212,14 @@ router.get('/getUser', verifyJWT, async (req, res) => {
         if (!account) return res.send(400).json({ message: "Account not found with given information." });
 
 
+        const authHeader = req.headers.authorization || req.headers.Authorization;;
+        const token = authHeader.split(' ')[1];
 
-        res.status(200).json(account);
+        res.status(200).json({
+            email: account.email,
+            joined: account.joined,
+            uuid: account.uuid
+        });
 
     }
     catch (err) {
@@ -219,34 +232,37 @@ router.get('/getUser', verifyJWT, async (req, res) => {
 
 
 
-// router.get('/logout', async (req, res) => {
-//     const cookies = req.cookies;
-//     if (!cookies?.jwt) return res.status(204).json({ message: "No cookies send with request." }); //No content
-//     const refreshToken = cookies?.jwt;
+router.get('/logout', async (req, res) => {
+    console.log("logout called");
+    const cookies = req.cookies;
+    if (!cookies?.refreshjwt) return res.status(204).json({ message: "No cookies send with request." }); //No content
+    const refreshToken = cookies?.refreshjwt;
+
+    console.log("here?");
+
+    const account = await UserModel.findOne({ refreshToken: refreshToken });
+    res.clearCookie("accessjwt", { httpOnly: true, sameSite: "None", secure: true });
+    res.clearCookie("refreshjwt", { httpOnly: true, sameSite: "None", secure: true });
+    if (!account) {
+        return res.sendStatus(204);
+    }
+
+    account.refreshToken = "";
+    account.save().then(() => {
+        res.status(204).json({ message: "User Successfully Logged Out" });
+        console.log("user logged out");
+    },
+        (err) => {
+            console.log(err);
+            res.status(err.status || 400).json({ message: err.message });
+            return;
+
+        })
 
 
 
-//     const account = await UserModel.findOne({ refreshToken });
-//     res.clearCookie("jwt", { httpOnly: true, sameSite: "None", secure: true });
-//     if (!account) {
-//         return res.sendStatus(204);
-//     }
 
-//     account.refreshToken = "";
-//     account.save().then(() => {
-//         res.status(204).json({ message: "User Successfully Logged Out" });
-//     },
-//         (err) => {
-//             console.log(err);
-//             res.status(err.status || 400).json({ message: err.message });
-//             return;
-
-//         })
-
-
-
-
-// });
+});
 
 
 // router.post('/update', verifyJWT, async (req, res) => {

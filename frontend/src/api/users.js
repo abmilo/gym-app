@@ -4,15 +4,13 @@ import axios from "./axios";
 import { AxioPrivate } from "./axios";
 // import { xios } from "./axios";
 
+
 export const register = async (data) => {
     try {
         const response = await axios.post(
             "/users/register",
             JSON.stringify(data),
             {
-                headers: {
-                    "Content-Type": "application/json",
-                },
             }
         );
         return response;
@@ -32,9 +30,7 @@ export const login = async (data) => {
             "/users/login",
             JSON.stringify(data),
             {
-                // headers: {
-                //     "Content-Type": "application/json",
-                // },
+
                 withCredentials: true,
             }
         );
@@ -50,8 +46,8 @@ export const login = async (data) => {
 
 
 
-export const getUser = async () => {
-    const axiosPrivate = AxioPrivate();
+export const getUser = async (auth) => {
+    const axiosPrivate = AxioPrivate(auth);
     try {
         const res = await axiosPrivate.get(
             "/users/getUser",
@@ -70,23 +66,22 @@ export const getUser = async () => {
 
 };
 
-// export const Refresh = async () => {
-//     const axiosIP = Axios();
-//     try {
-//         const response = await axiosIP.get(
-//             "/users/refresh",
-//             {
-//                 withCredentials: true,
-//             }
-//         );
-//         return response;
+export const Refresh = async () => {
+    try {
+        const response = await axios.get(
+            "/users/refresh",
+            {
+                withCredentials: true,
+            }
+        );
+        return response;
 
-//     } catch (err) {
-//         return err;
+    } catch (err) {
+        return err;
 
-//     }
+    }
 
-// };
+};
 
 // export const GetUser = async (auth) => {
 //     const axiosPrivate = AxioPrivate(auth);
@@ -113,24 +108,24 @@ export const getUser = async () => {
 
 // };
 
-// export const logout = async () => {
-//     try {
-//         const response = await axios.get(
-//             "/users/logout",
-//             {
-//                 withCredentials: true,
-//             }
-//         );
+export const logout = async () => {
+    try {
+        const response = await axios.get(
+            "/users/logout",
+            {
+                withCredentials: true,
+            }
+        );
 
-//         return response;
+        return response;
 
-//     } catch (err) {
-//         console.log(err)
-//         return err;
+    } catch (err) {
+        console.log(err)
+        return err;
 
-//     }
+    }
 
-// };
+};
 
 
 // export const UpdateUser = async (data, auth) => {

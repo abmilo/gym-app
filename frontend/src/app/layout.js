@@ -2,7 +2,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "../components/ui/Navbar";
 import Footer from "../components/ui/Footer";
-
+import { Providers } from "@/context/Providers";
+import PersistWrapper from "@/components/ui/PersistanceWrapper";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
@@ -13,12 +14,17 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={ inter.className }>
-        <Navbar />
+      <body className={inter.className}>
+        <Providers>
+          <PersistWrapper>
 
-        { children }
+            <Navbar />
 
-        <Footer />
+            {children}
+
+            <Footer />
+          </PersistWrapper>
+        </Providers>
       </body>
     </html>
   );
