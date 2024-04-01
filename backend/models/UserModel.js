@@ -7,6 +7,12 @@ var Filter = require('bad-words'),
     filter = new Filter();
 
 
+const friendSchema = {
+    email: String,
+    status: String
+};
+
+
 const UserSchema = new Schema({
     email: {
         type: String,
@@ -70,7 +76,12 @@ const UserSchema = new Schema({
         type: String,
         default: short.generate(),
         required: true
-    }
+    },
+    lastAtGym: {
+        type: Date
+    },
+    friends: [friendSchema],
+
 
 });
 

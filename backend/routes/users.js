@@ -47,6 +47,7 @@ router.post('/login', async (req, res) => {
         uuid = account?.uuid;
         joined = account?.joined;
         account.refreshToken = refreshToken;
+        friends = account.friends
         account.save().then(() => {
             console.log("New Refresh Token Saved");
         },
@@ -78,7 +79,8 @@ router.post('/login', async (req, res) => {
                 accessjwt: accessToken,
                 email: email,
                 uuid: uuid,
-                joined: joined
+                joined: joined,
+                friends: friends
             }
         });
     }
@@ -183,7 +185,9 @@ router.get('/refresh', async (req, res) => {
                         accessjwt: accessToken,
                         email: account?.email,
                         uuid: account?.uuid,
-                        joined: account?.joined
+                        joined: account?.joined,
+                        friends: account.friends
+
                     }
                 })
             }
@@ -218,7 +222,8 @@ router.get('/getUser', verifyJWT, async (req, res) => {
         res.status(200).json({
             email: account.email,
             joined: account.joined,
-            uuid: account.uuid
+            uuid: account.uuid,
+            friends: account.friends
         });
 
     }
@@ -265,40 +270,106 @@ router.get('/logout', async (req, res) => {
 });
 
 
-// router.post('/update', verifyJWT, async (req, res) => {
-//     const data = req.body;
-//     const email = req?.email;
-//     if (!email) {
-//         console.log("Request does not have an auth header.")
-//         return res.send(401).json({ message: "Request does not have an email." });
-//     }
+router.post("/addfriend", verifyJWT, async (req, res) => {
+    const { sender, reciever } = req.body;
 
-//     const account = await UserModel.findOne({ email: email });
-//     if (!account) return res.send(400).json({ message: "Account not found with given information." });
+    if (!reciever) return res.status(400).json({ message: "Friendee not found" });
 
-//     account.firstName = data?.first;
-//     account.middleName = data?.middle;
-//     account.lastName = data?.last;
-//     account.fullName = `${data?.first} ${data?.middle ? data?.middle + " " : ""}${data?.last}`,
+    // check existance
+    const friender = await UserModel.findOne({ email: sender });
+    if (!friender) return res.status(400).json({ message: "Friender not found" });
 
+    const friendee = await UserModel.findOne({ email: reciever });
+    if (!friendee) return res.status(400).json({ message: "Friendee not found" });
 
-//         account.save().then(() => {
-//             res.status(204).json({ message: "User Information Successfully Updated" });
-//         },
-//             (err) => {
-//                 const errs = err?.errors
-//                 const keys = Object.keys(err?.errors);
-//                 const msg = errs[keys[0]]?.properties?.message;
-//                 res.status(err.status || 400).json({ message: msg || err?.message });
-//                 return;
+    // check if already friends
+    let alreadyFriends = false;
+    friendee?.friends.forEach((friend) => {
+        console.log(friender.email)
+        console.log(friend.email)
+        if (friender?.email == friend.email) {
+            console.log(" already friends!")
+            alreadyFriends = true;
+        }
+    })
+
+    if (alreadyFriends) res.status(400).json({ message: "Friend Request Already Sent" });
 
 
-//             })
+    friendee?.friends?.push({
+        email: friender.email,
+        status: "Pending"
+    })
+
+    friender?.friends?.push({
+        email: friendee.email,
+        status: "Pending"
+    })
+
+    friendee.save().then(() => {
+        // res.status(201).json({ message: "New User Successfully Saved" });
+    },
+        (err) => {
+            const errs = err?.errors
+            const keys = Object.keys(err?.errors);
+            const msg = errs[keys[0]]?.properties?.message;
+            res.status(err.status || 400).json({ message: msg || err?.message });
+            return;
+
+        })
+
+    friender.save().then(() => {
+        // res.status(201).json({ message: "New User Successfully Saved" });
+    },
+        (err) => {
+            const errs = err?.errors
+            const keys = Object.keys(err?.errors);
+            const msg = errs[keys[0]]?.properties?.message;
+            res.status(err.status || 400).json({ message: msg || err?.message });
+            return;
+
+        })
+
+
+
+    res.status(200).json({ message: "Success so far!" });
+
+})
 
 
 
 
-// });
+
+router.get("/getFriendData/:user", verifyJWT, async (req, res) => {
+
+    const user = await UserModel.findOne({ uuid: req.params.user });
+    if (!user) return res.status(400).json({ message: "Inital User not found" });
+
+    let final_friends = []
+    let pending_friends = []
+
+    const friends = user.friends;
+    console.log(friends)
+    try {
+        for (index in friends) {
+            console.log(index)
+            const friend_account = await UserModel.findOne({ email: friends[index].email }, { _id: 0, password: 0, uuid: 0, refreshToken: 0, friends: 0 });
+            if (!friend_account) continue;
+            if (friends[index].status != "Friends") pending_friends.push({ ...friend_account._doc });
+            else final_friends.push({ ...friend_account._doc });
+        }
+    }
+    catch (e) {
+        console.log(e)
+        return res.status(400).json({ message: "There was an issue getting friend data." });
+    }
+
+    console.log("final friends", final_friends)
+    console.log("pending friends", pending_friends)
+
+    res.status(200).json({ final_friends: final_friends, pending_friends: pending_friends });
+
+})
 
 
 

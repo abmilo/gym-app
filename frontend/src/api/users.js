@@ -128,27 +128,47 @@ export const logout = async () => {
 };
 
 
-// export const UpdateUser = async (data, auth) => {
-//     const axiosPrivate = AxioPrivate(auth);
+export const AddFriend = async (data, auth) => {
+    const axiosPrivate = AxioPrivate(auth);
 
-//     try {
-//         const response = await axiosPrivate.post(
-//             "/users/update",
-//             JSON.stringify(data),
-//             {
-//                 withCredentials: true,
-//             }
-//         );
+    try {
+        const response = await axiosPrivate.post(
+            "/users/addfriend",
+            JSON.stringify(data),
+            {
+                withCredentials: true,
+            }
+        );
 
-//         return response;
+        return response;
 
-//     } catch (err) {
-//         console.log(err)
-//         return err;
+    } catch (err) {
+        console.log(err)
+        return err;
 
-//     }
+    }
 
-// };
+};
+
+export const GetFriendData = async (auth) => {
+    const axiosPrivate = AxioPrivate(auth);
+    try {
+        const response = await axiosPrivate.get(
+            `/users/getFriendData/${auth.uuid}`,
+            {
+                withCredentials: true,
+            }
+        );
+
+        return response;
+
+    } catch (err) {
+        console.log(err)
+        return err;
+
+    }
+
+};
 
 
 

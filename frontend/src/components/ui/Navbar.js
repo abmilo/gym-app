@@ -10,10 +10,10 @@ import useLogout from '@/hooks/useLogout'
 const loggedOutNavigation = [
     { name: 'Home', href: '/' },
     { name: 'Register', href: '/register' },
-    { name: 'Login', href: '/login' },
 ]
 const loggedInNavigation = [
     { name: 'Home', href: '/' },
+    { name: 'Friends', href: '/friends' },
     { name: 'Profile', href: '/profile' },
 ]
 
@@ -52,16 +52,16 @@ export default function Navbar() {
                             (authed ?
 
                                 loggedInNavigation.map((item) => (
-                                    <Link key={item.name} href={item.href} className="text-sm font-semibold leading-6 text-gold">
-                                        {item.name}
+                                    <Link key={ item.name } href={ item.href } className="text-sm font-semibold leading-6 text-gold">
+                                        { item.name }
                                     </Link>
                                 ))
 
                                 :
 
                                 loggedOutNavigation.map((item) => (
-                                    <Link key={item.name} href={item.href} className="text-sm font-semibold leading-6 text-gold">
-                                        {item.name}
+                                    <Link key={ item.name } href={ item.href } className="text-sm font-semibold leading-6 text-gold">
+                                        { item.name }
                                     </Link>
                                 ))
 
@@ -72,7 +72,7 @@ export default function Navbar() {
                         <button
                             type="button"
                             className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gold"
-                            onClick={() => setMobileMenuOpen(true)}
+                            onClick={ () => setMobileMenuOpen(true) }
                         >
                             <span className="sr-only">Open main menu</span>
                             <Bars3Icon className="h-6 w-6" aria-hidden="true" />
@@ -89,7 +89,7 @@ export default function Navbar() {
                 <div className="flex flex-1 justify-end">
                     {
                         (authed ?
-                            <div onClick={handleLogout} className="text-sm font-semibold leading-6 text-gold">
+                            <div onClick={ handleLogout } className="text-sm font-semibold leading-6 text-gold">
                                 Log out
                             </div>
                             :
@@ -100,7 +100,7 @@ export default function Navbar() {
                     }
                 </div>
             </nav>
-            <Dialog as="div" className="lg:hidden" open={mobileMenuOpen} onClose={setMobileMenuOpen}>
+            <Dialog as="div" className="lg:hidden" open={ mobileMenuOpen } onClose={ setMobileMenuOpen }>
                 <div className="fixed inset-0 z-10" />
                 <Dialog.Panel className="fixed inset-y-0 left-0 z-10 w-full overflow-y-auto bg-royal px-6 py-6">
                     <div className="flex items-center justify-between">
@@ -108,7 +108,7 @@ export default function Navbar() {
                             <button
                                 type="button"
                                 className="-m-2.5 rounded-md p-2.5 text-gold"
-                                onClick={() => setMobileMenuOpen(false)}
+                                onClick={ () => setMobileMenuOpen(false) }
                             >
                                 <span className="sr-only">Close menu</span>
                                 <XMarkIcon className="h-6 w-6" aria-hidden="true" />
@@ -124,7 +124,7 @@ export default function Navbar() {
                         <div className="flex flex-1 justify-end">
                             {
                                 (authed ?
-                                    <div onClick={handleLogout} className="text-sm font-semibold leading-6 text-gold">
+                                    <div onClick={ handleLogout } className="text-sm font-semibold leading-6 text-gold">
                                         Log out
                                     </div>
                                     :
@@ -142,11 +142,11 @@ export default function Navbar() {
 
                                 loggedInNavigation.map((item) => (
                                     <Link
-                                        key={item.name}
-                                        href={item.href}
+                                        key={ item.name }
+                                        href={ item.href }
                                         className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gold hover:bg-gray-50"
                                     >
-                                        {item.name}
+                                        { item.name }
                                     </Link>
                                 ))
 
@@ -154,11 +154,11 @@ export default function Navbar() {
 
                                 loggedOutNavigation.map((item) => (
                                     <Link
-                                        key={item.name}
-                                        href={item.href}
+                                        key={ item.name }
+                                        href={ item.href }
                                         className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gold hover:bg-gray-50"
                                     >
-                                        {item.name}
+                                        { item.name }
                                     </Link>
                                 ))
 
