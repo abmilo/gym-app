@@ -24,11 +24,11 @@ export default function ProfileLayout({ children }) {
 
     return (
         <>
-            <div className="">
 
-                {authed && children}
 
-            </div>
+            {authed && children}
+
+
 
         </>
 
