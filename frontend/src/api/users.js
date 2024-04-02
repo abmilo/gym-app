@@ -170,6 +170,27 @@ export const GetFriendData = async (auth) => {
 
 };
 
+export const AcceptFriend = async (data, auth) => {
+    const axiosPrivate = AxioPrivate(auth);
+    try {
+        const response = await axiosPrivate.post(
+            "/users/acceptfriend",
+            JSON.stringify(data),
+            {
+                withCredentials: true,
+            }
+        );
+
+        return response;
+
+    } catch (err) {
+        console.log(err)
+        return err;
+
+    }
+
+};
+
 
 
 

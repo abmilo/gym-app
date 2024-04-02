@@ -298,12 +298,12 @@ router.post("/addfriend", verifyJWT, async (req, res) => {
 
     friendee?.friends?.push({
         email: friender.email,
-        status: "Pending"
+        status: "Recieved"
     })
 
     friender?.friends?.push({
         email: friendee.email,
-        status: "Pending"
+        status: "Sent"
     })
 
     friendee.save().then(() => {
@@ -319,7 +319,7 @@ router.post("/addfriend", verifyJWT, async (req, res) => {
         })
 
     friender.save().then(() => {
-        // res.status(201).json({ message: "New User Successfully Saved" });
+        res.status(200).json({ message: "Friend Request Sent" });
     },
         (err) => {
             const errs = err?.errors
@@ -330,9 +330,6 @@ router.post("/addfriend", verifyJWT, async (req, res) => {
 
         })
 
-
-
-    res.status(200).json({ message: "Success so far!" });
 
 })
 
@@ -345,7 +342,9 @@ router.get("/getFriendData/:user", verifyJWT, async (req, res) => {
     const user = await UserModel.findOne({ uuid: req.params.user });
     if (!user) return res.status(400).json({ message: "Inital User not found" });
 
-    let final_friends = []
+    let acceptedFriends = []
+    let sentFriends = []
+    let recievedFriends = []
     let pending_friends = []
 
     const friends = user.friends;
@@ -353,10 +352,11 @@ router.get("/getFriendData/:user", verifyJWT, async (req, res) => {
     try {
         for (index in friends) {
             console.log(index)
-            const friend_account = await UserModel.findOne({ email: friends[index].email }, { _id: 0, password: 0, uuid: 0, refreshToken: 0, friends: 0 });
-            if (!friend_account) continue;
-            if (friends[index].status != "Friends") pending_friends.push({ ...friend_account._doc });
-            else final_friends.push({ ...friend_account._doc });
+            const friendAccount = await UserModel.findOne({ email: friends[index].email }, { _id: 0, password: 0, uuid: 0, refreshToken: 0, friends: 0 });
+            if (!friendAccount) continue;
+            if (friends[index].status == "Recieved") recievedFriends.push({ ...friendAccount._doc });
+            else if (friends[index].status == "Sent") sentFriends.push({ ...friendAccount._doc });
+            else acceptedFriends.push({ ...friendAccount._doc });
         }
     }
     catch (e) {
@@ -364,16 +364,82 @@ router.get("/getFriendData/:user", verifyJWT, async (req, res) => {
         return res.status(400).json({ message: "There was an issue getting friend data." });
     }
 
-    console.log("final friends", final_friends)
-    console.log("pending friends", pending_friends)
+    console.log("accepted friends", acceptedFriends);
+    console.log("sent friends", sentFriends);
+    console.log("recieved friends", recievedFriends);
 
-    res.status(200).json({ final_friends: final_friends, pending_friends: pending_friends });
+    res.status(200).json({ acceptedFriends: acceptedFriends, sentFriends: sentFriends, recievedFriends: recievedFriends });
 
 })
 
 
 
+router.post("/acceptfriend", verifyJWT, async (req, res) => {
+    const { sender, reciever } = req.body;
 
+    if (!reciever) return res.status(400).json({ message: "Friendee not found" });
+
+    // check existance
+    const friender = await UserModel.findOne({ email: sender });
+    if (!friender) return res.status(400).json({ message: "Friender not found" });
+
+    const friendee = await UserModel.findOne({ email: reciever });
+    if (!friendee) return res.status(400).json({ message: "Friendee not found" });
+
+    // check if no request 
+    let alreadyFriends = false;
+    friendee?.friends.forEach((friend) => {
+        console.log(friender.email)
+        console.log(friend.email)
+        if (friender?.email == friend.email) {
+            console.log(" already friends!")
+            alreadyFriends = true;
+        }
+    })
+
+    if (!alreadyFriends) return res.status(400).json({ message: "No Friend Request Sent" });
+
+    for (index in friendee?.friends) {
+        if (friendee?.friends[index].email == friender.email) {
+            friendee.friends[index].status = "Accepted";
+            break;
+        }
+    }
+    for (index in friender?.friends) {
+        if (friender?.friends[index].email == friendee.email) {
+            friender.friends[index].status = "Accepted";
+            break;
+        }
+    }
+
+
+    friendee.save().then(() => {
+    },
+        (err) => {
+            const errs = err?.errors
+            const keys = Object.keys(err?.errors);
+            const msg = errs[keys[0]]?.properties?.message;
+            res.status(err.status || 400).json({ message: msg || err?.message });
+            return;
+
+        })
+
+    friender.save().then(() => {
+        // return res.status(200).json({ message: "Friends Accepted" });
+    },
+        (err) => {
+            const errs = err?.errors
+            const keys = Object.keys(err?.errors);
+            const msg = errs[keys[0]]?.properties?.message;
+            res.status(err.status || 400).json({ message: msg || err?.message });
+            return;
+
+        })
+
+    res.status(200).json({ message: "Friends Accepted" });
+
+
+})
 
 
 module.exports = router;
