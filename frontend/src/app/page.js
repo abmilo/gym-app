@@ -11,7 +11,7 @@ export default function Home() {
           <p className="text-gold text-center text-lg font-semibold">Select a Pitt Gym</p>
         </div>
         <div className="mt-2">
-          <Link href="gym/1" >
+          <Link href="gym/660f1cc2ccdcbd83e05578f8" >
             <button
 
               type="submit"
@@ -23,7 +23,7 @@ export default function Home() {
 
         </div>
         <div className="mt-2">
-          <Link href="gym/2" >
+          <Link href="gym/660f1d34ccdcbd83e05578f9" >
             <button
 
               type="submit"

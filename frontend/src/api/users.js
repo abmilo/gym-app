@@ -193,6 +193,27 @@ export const AcceptFriend = async (data, auth) => {
 
 
 
+export const GetGymInfo = async (data) => {
+    try {
+        const response = await axios.get(
+            `/gyms/${data}`,
+            {
+                withCredentials: true,
+            }
+        );
+
+        return response;
+
+    } catch (err) {
+        console.log(err)
+        return err;
+
+    }
+
+};
+
+
+
 
 
 

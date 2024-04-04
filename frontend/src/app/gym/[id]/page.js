@@ -8,6 +8,17 @@ import AuthContext from "@/context/AuthProvider"
 
 const Gym = ({ params }) => {
 
+    useEffect(() => {
+
+
+
+    }, [])
+
+
+    const getGymInfo = async () => {
+
+    }
+
 
 
 

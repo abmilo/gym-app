@@ -9,7 +9,7 @@ const GymSchema = new Schema({
         required: true
     },
     crowdLevel: {
-        type: String,
+        type: Number,
         required: true
     },
     lastUpdated: {
