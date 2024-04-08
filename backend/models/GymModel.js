@@ -18,7 +18,22 @@ const GymSchema = new Schema({
     },
     lastUpdated: {
         type: Date
-    }
+    },
+    reportsToday: {
+        type: Number,
+        required: true,
+        default: new Date()
+    },
+    reportDate: {
+        type: Date,
+        required: true,
+        default: new Date()
+    },
+    reportTotal: {
+        type: Number,
+        required: true,
+        default: 0
+    },
 
 });
 

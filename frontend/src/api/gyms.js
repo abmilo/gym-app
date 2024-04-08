@@ -17,3 +17,20 @@ export const GetGym = async (data) => {
     }
 
 };
+
+export const PostScore = async (data) => {
+    try {
+        const response = await axios.post(
+            "/gyms/postScore",
+            JSON.stringify(data),
+            {
+            }
+        );
+        return response;
+
+    } catch (err) {
+        console.log(err)
+        return err;
+    }
+
+};

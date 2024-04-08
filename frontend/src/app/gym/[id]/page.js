@@ -5,6 +5,11 @@ import AuthContext from "@/context/AuthProvider"
 import { GetGym } from "@/api/gyms";
 import { ArrowDownIcon, ArrowUpIcon } from '@heroicons/react/20/solid'
 import GymScore from "@/components/GymScore";
+import Link from "next/link"
+import { InformationCircleIcon } from '@heroicons/react/20/solid'
+import Slider from '@mui/material/Slider';
+import { PostScore } from '@/api/gyms';
+import { useRouter } from 'next/navigation'
 
 
 function classNames(...classes) {
@@ -13,10 +18,18 @@ function classNames(...classes) {
 
 
 const Gym = ({ params }) => {
-
+    const { auth, setAuth } = useContext(AuthContext);
     const [gym, setGym] = useState({});
     const [lastUpdated, setLastUpdated] = useState(0);
     const [timeDiff, setTimeDiff] = useState(0);
+    const [value, setValue] = useState(5);
+    const [showScore, setShowScore] = useState(false);
+    const router = useRouter();
+
+
+    const handleChange = (event, newValue) => {
+        setValue(newValue);
+    };
 
     useEffect(() => {
         getGymInfo()
@@ -42,7 +55,30 @@ const Gym = ({ params }) => {
 
         }
         else {
-            console.log("error!") / home / m4xm / Classes / 1530 / group8_1530 / frontend / src / app / friends
+            console.log("error!")
+            return;
+        }
+    }
+
+
+
+
+    const handlePostScore = async () => {
+        let data = {
+            user_id: auth.email,
+            gym_id: params.id,
+            score: value
+        }
+        const res = await PostScore(data);
+        if (res?.status === 200) {
+            console.log("success!")
+            console.log(res);
+            // location.reload();
+            router.push(`/gym/${id}`);
+            router.refresh();
+        }
+        else {
+            console.log("error!")
             return;
         }
     }
@@ -59,7 +95,6 @@ const Gym = ({ params }) => {
 
 
 
-
                 <div className="text-royal text-3xl font-bold p-10 pb-0 ">{gym.name}</div>
 
                 <div className="p-10">
@@ -70,17 +105,17 @@ const Gym = ({ params }) => {
                             <dt className="text-base font-normal text-gray-900">Crowd Level</dt>
                             <dd className="mt-1 flex items-baseline justify-between md:block lg:flex">
                                 <div className="flex items-baseline text-2xl font-semibold text-gold">
-                                    {gym.crowdLevel}
+                                    {Math.round(gym.crowdLevel * 100) / 100}
                                     <span className="ml-2 text-sm font-medium text-gray-500">out of 10</span>
                                 </div>
 
                                 <div
                                     className={classNames(
-                                        gym.crowdLevel >= gym.previousCrowdLevel ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800',
+                                        gym.crowdLevel >= gym.previousLevel ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800',
                                         'inline-flex items-baseline rounded-full px-2.5 py-0.5 text-sm font-medium md:mt-2 lg:mt-0'
                                     )}
                                 >
-                                    {gym.crowdLevel >= gym.previousCrowdLevel ? (
+                                    {gym.crowdLevel >= gym.previousLevel ? (
                                         <ArrowUpIcon
                                             className="-ml-1 mr-0.5 h-5 w-5 flex-shrink-0 self-center text-green-500"
                                             aria-hidden="true"
@@ -92,7 +127,7 @@ const Gym = ({ params }) => {
                                         />
                                     )}
 
-                                    {gym.crowdLevel - gym.previousCrowdLevel || 0}
+                                    {Math.round(Math.abs(gym.crowdLevel - gym.previousLevel) * 100) / 100}
                                 </div>
                             </dd>
                         </div>
@@ -118,9 +153,111 @@ const Gym = ({ params }) => {
                     </dl>
                 </div>
 
-                <GymScore id={params.id} />
+                {JSON.stringify(auth) !== "{}" ? (
+                    <>
 
-            </div>
+                        {showScore ? (<>
+                            <div className='p-10'>
+                                <div className='text-royal text-center text-xl font-bold'>Give the crowd level a score: <span className='text-gold'>{value}</span></div>
+
+                                <Slider
+                                    defaultValue={5}
+                                    valueLabelDisplay="auto"
+                                    shiftStep={30}
+                                    step={1}
+                                    marks
+                                    min={0}
+                                    max={10}
+                                    onChange={handleChange}
+                                />
+
+                                <button
+                                    onClick={handlePostScore}
+                                    type="submit"
+                                    className="flex w-full justify-center rounded-md bg-royal px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-gold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                                >
+                                    Submit Score
+                                </button>
+                            </div>
+
+
+
+
+                        </>) : (<>
+
+                            <div className='p-10'>
+
+
+                                <button
+                                    onClick={() => setShowScore(true)}
+                                    type="submit"
+                                    className="flex w-full justify-center rounded-md bg-royal px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-gold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                                >
+                                    Enter a score
+                                </button>
+                            </div>
+
+
+
+                        </>)}
+
+
+
+
+
+                    </>
+
+
+                ) : (
+                    <div className="px-10">
+                        <dl className="mt-5 grid grid-cols-1 divide-y divide-gray-200 overflow-hidden rounded-lg bg-white shadow md:divide-x md:divide-y-0">
+
+                            <div className="px-4 py-5 sm:p-6 shadow">
+                                <dt className="text-base font-normal text-gray-900 mb-3">Want to submit a crowd level report?</dt>
+                                <dd className="mt-1 flex items-baseline justify-between md:block lg:flex">
+                                    <div className="flex items-baseline text-2xl font-semibold text-gold">
+                                        <Link href="/login">
+                                            <button
+
+                                                type="submit"
+                                                className="flex justify-center rounded-md bg-royal px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-gold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                                            >
+                                                Sign In
+                                            </button>
+                                        </Link>
+                                    </div>
+
+                                    {/* <div
+                                        className='bg-green-100 text-green-800 inline-flex items-baseline rounded-full px-2.5 py-0.5 text-sm font-medium md:mt-2 lg:mt-0'
+                                    >
+
+
+                                        User submission is how we collect our data!
+                                    </div> */}
+                                </dd>
+                            </div>
+                        </dl>
+                    </div>
+
+                )}
+
+                <div className="m-10 rounded-md bg-blue-50 p-4">
+                    <div className="flex">
+                        <div className="flex-shrink-0">
+                            <InformationCircleIcon className="h-5 w-5 text-blue-400" aria-hidden="true" />
+                        </div>
+                        <div className="ml-3 flex-1 md:flex md:justify-between">
+                            <p className="text-sm text-blue-700">User Input is how we collect the data necessary to run this app. Please consider contributing.</p>
+                            <p className="mt-3 text-sm md:ml-6 md:mt-0">
+                                <Link href="/info" className="whitespace-nowrap font-medium text-blue-700 hover:text-blue-600">
+                                    Details
+                                    <span aria-hidden="true"> &rarr;</span>
+                                </Link>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div >
 
         </>
     );

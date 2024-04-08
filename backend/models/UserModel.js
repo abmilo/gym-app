@@ -80,6 +80,16 @@ const UserSchema = new Schema({
     lastAtGym: {
         type: Date
     },
+    reportsToday: {
+        type: Number,
+        required: true,
+        default: 0
+    },
+    reportDate: {
+        type: Date,
+        required: true,
+        default: new Date()
+    },
     friends: [friendSchema],
 
 
