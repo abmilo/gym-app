@@ -10,8 +10,11 @@
   },
   "dependencies": {
     "@auth0/auth0-react": "^2.2.4",
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
     "@headlessui/react": "^1.7.18",
     "@heroicons/react": "^2.1.1",
+    "@mui/material": "^5.15.15",
     "@tailwindcss/forms": "^0.5.7",
     "axios": "^1.6.7",
     "next": "14.1.0",

@@ -12,6 +12,10 @@ const GymSchema = new Schema({
         type: Number,
         required: true
     },
+    previousLevel: {
+        type: Number,
+        required: true
+    },
     lastUpdated: {
         type: Date
     }

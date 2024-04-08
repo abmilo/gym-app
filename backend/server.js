@@ -37,6 +37,7 @@ app.use(cors(corsOptions));
 
 // routes
 app.use('/users', require('./routes/users'));
+app.use('/gyms', require('./routes/gyms'));
 
 
 app.get('/', function (req, res) {

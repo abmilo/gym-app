@@ -1,31 +1,25 @@
+const express = require("express");
+const router = express.Router();
+require("dotenv").config();
+const short = require('short-uuid');
+const GymModel = require("../models/GymModel")
+const bcrypt = require("bcrypt");
+const jwt = require('jsonwebtoken');
+const verifyJWT = require("../middleware/verifyJWT");
+// var Filter = require('bad-words'),
 
 
+router.get('/getGym/:gym', async (req, res) => {
+    try {
+        const gym = await GymModel.findOne({ _id: req.params.gym });
+        if (gym) return res.status(200).json(gym);
+        else return res.status(204);
 
-// router.get('/getUser', verifyJWT, async (req, res) => {
-//     try {
+    }
+    catch (err) {
+        console.log(err);
+        res.sendStatus(400);
+    }
+});
 
-//         const email = req?.email;
-//         if (!email) {
-//             return res.send(401).json({ message: "Request does not have an email." });
-//         }
-
-//         const account = await UserModel.findOne({ email: email }, { _id: 0, password: 0, uuid: 0, refreshToken: 0 });
-//         if (!account) return res.send(400).json({ message: "Account not found with given information." });
-
-
-//         const authHeader = req.headers.authorization || req.headers.Authorization;;
-//         const token = authHeader.split(' ')[1];
-
-//         res.status(200).json({
-//             email: account.email,
-//             joined: account.joined,
-//             uuid: account.uuid,
-//             friends: account.friends
-//         });
-
-//     }
-//     catch (err) {
-//         console.log(err);
-//         res.sendStatus(400);
-//     }
-// });
+module.exports = router;
