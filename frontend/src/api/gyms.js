@@ -24,6 +24,7 @@ export const PostScore = async (data) => {
             "/gyms/postScore",
             JSON.stringify(data),
             {
+                withCredentials: true,
             }
         );
         return response;

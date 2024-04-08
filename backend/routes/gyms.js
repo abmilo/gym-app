@@ -98,7 +98,7 @@ router.post('/postScore', async (req, res) => {
 
 
         console.log("hello")
-        gym.save().then(() => {
+        await gym.save().then(() => {
             console.log("gym saved");
         },
             (err) => {
@@ -109,7 +109,7 @@ router.post('/postScore', async (req, res) => {
                 return;
 
             })
-        user.save().then(() => {
+        await user.save().then(() => {
             console.log("user saved");
         },
             (err) => {
@@ -122,7 +122,7 @@ router.post('/postScore', async (req, res) => {
             })
 
 
-        report.save().then(() => {
+        await report.save().then(() => {
             console.log("report saved");
         },
             (err) => {
@@ -137,8 +137,8 @@ router.post('/postScore', async (req, res) => {
 
 
 
-
-        return res.status(204);
+        console.log("saving?");
+        return res.status(200);
 
     }
     catch (err) {
