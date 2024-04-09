@@ -16,6 +16,8 @@ bun dev
 ```
 For the frontend:
 cd to the frontend folder first and then run: npm run dev
+
+
 For the backend:
 cd to the backend folder first and then run: npx nodemon server.js
 
