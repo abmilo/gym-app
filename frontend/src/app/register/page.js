@@ -1,8 +1,10 @@
 'use client'
 import Link from "next/link"
 import { register } from "@/api/users";
-import { useState } from 'react'
+import { useState, useContext } from 'react'
 import { useRouter } from 'next/navigation'
+import ToastContext from '@/context/ToastContext';
+import { InformationCircleIcon } from '@heroicons/react/20/solid'
 
 
 export default function Register() {
@@ -10,6 +12,7 @@ export default function Register() {
     const [password, setPassword] = useState("");
     const [confirmedPassword, setConfirmedPassword] = useState("");
     const router = useRouter();
+    const { msg, type, setMsg, setType } = useContext(ToastContext);
 
     const emailRegex = new RegExp(/^[A-Za-z0-9_!#$%&'*+\/=?`{|}~^.-]*@pitt.edu+$/);
     const passwordRegex = new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/);
@@ -18,18 +21,21 @@ export default function Register() {
         // email checks
         const isValidEmail = emailRegex.test(email);
         if (!isValidEmail) {
-            console.log("not a valid email")
+            setMsg("Not a valid email");
+            setType(0);
             return;
         }
 
         // password checks
         const isValidPassword = passwordRegex.test(password);
         if (!isValidPassword) {
-            console.log("Not a valid password.");
+            setMsg("Not a valid password");
+            setType(0);
             return;
         }
         if (password !== confirmedPassword) {
-            console.log("Passwords do not match");
+            setMsg("Password mismatch");
+            setType(0);
             return;
         }
 
@@ -47,12 +53,13 @@ export default function Register() {
         const res = await register(data);
         console.log(res);
         if (res?.status === 201) {
-            console.log("success!")
             router.push("/login");
+            setMsg(res?.response?.data?.message || "Success");
+            setType(1)
         }
         else {
-
-            console.log("error!")
+            setMsg(res?.response?.data?.message || "Unknown Error");
+            setType(0);
             return;
         }
     }
@@ -78,9 +85,9 @@ export default function Register() {
                                 </label>
                                 <div className="mt-2">
                                     <input
-                                        onChange={ (event) => {
+                                        onChange={(event) => {
                                             setEmail(event?.target?.value)
-                                        } }
+                                        }}
                                         id="email"
                                         name="email"
                                         type="email"
@@ -97,9 +104,9 @@ export default function Register() {
                                 </label>
                                 <div className="mt-2">
                                     <input
-                                        onChange={ (event) => {
+                                        onChange={(event) => {
                                             setPassword(event?.target?.value)
-                                        } }
+                                        }}
                                         id="password"
                                         name="password"
                                         type="password"
@@ -115,9 +122,9 @@ export default function Register() {
                                 </label>
                                 <div className="mt-2">
                                     <input
-                                        onChange={ (event) => {
+                                        onChange={(event) => {
                                             setConfirmedPassword(event?.target?.value)
-                                        } }
+                                        }}
                                         id="password"
                                         name="password"
                                         type="password"
@@ -132,9 +139,9 @@ export default function Register() {
 
                             <div>
                                 <button
-                                    onClick={ () => {
+                                    onClick={() => {
                                         validate();
-                                    } }
+                                    }}
                                     type="submit"
                                     className="flex w-full justify-center rounded-md bg-royal px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-gold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                                 >
@@ -144,10 +151,25 @@ export default function Register() {
                         </div>
 
 
+                        <div className="my-5 rounded-md bg-blue-50 p-4">
+                            <div className="flex">
+                                <div className="flex-shrink-0">
+                                    <InformationCircleIcon className="h-5 w-5 text-blue-400" aria-hidden="true" />
+                                </div>
+                                <div className="ml-3 flex-1 md:flex md:justify-between">
+                                    <p className="text-sm text-blue-700">Email must be a valid Pitt email.</p>
+                                    <p className="text-sm text-blue-700">Password must be at least 8 characters and contain a captial letter, number, and special charater.</p>
+
+                                </div>
+
+                            </div>
+                        </div>
+
+
                     </div>
 
                     <p className="mt-10 text-center text-sm text-gray-500">
-                        Already have an account?{ ' ' }
+                        Already have an account?{' '}
                         <Link href="/login" className="font-semibold leading-6 text-royal hover:text-gold">
                             Sign In Here
                         </Link>

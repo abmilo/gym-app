@@ -138,7 +138,7 @@ router.post('/postScore', async (req, res) => {
 
 
         console.log("saving?");
-        return res.status(200);
+        return res.sendStatus(200);
 
     }
     catch (err) {

@@ -4,11 +4,15 @@ import { login } from "@/api/users";
 import { useContext, useEffect, useState } from "react"
 import AuthContext from "@/context/AuthProvider"
 import { useRouter } from 'next/navigation'
+import ToastContext from '@/context/ToastContext';
+
 export default function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const { auth, setAuth } = useContext(AuthContext);
     const router = useRouter();
+    const { msg, type, setMsg, setType } = useContext(ToastContext);
+
 
     const validate = async () => {
         if (!email) {
@@ -38,8 +42,8 @@ export default function Login() {
 
         }
         else {
-            // console.log(res);
-            console.log("error!")
+            setMsg(res?.response?.data?.message || "Unknown Error");
+            setType(0);
             return;
         }
     }

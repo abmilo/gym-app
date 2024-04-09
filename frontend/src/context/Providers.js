@@ -1,11 +1,15 @@
 'use client';
 
 import { AuthProvider } from "./AuthProvider";
+import { ToastProvider } from "./ToastContext";
 
 export function Providers({ children }) {
     return (
-        <AuthProvider>
-            {children}
-        </AuthProvider>
+        <ToastProvider>
+            <AuthProvider>
+                {children}
+            </AuthProvider>
+        </ToastProvider>
+
     );
 }

@@ -4,6 +4,7 @@ import Navbar from "../components/ui/Navbar";
 import Footer from "../components/ui/Footer";
 import { Providers } from "@/context/Providers";
 import PersistWrapper from "@/components/ui/PersistanceWrapper";
+import Toast from "@/components/overlay/toast";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
@@ -16,6 +17,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={inter.className}>
         <Providers>
+          <Toast />
           <PersistWrapper>
 
             <Navbar />

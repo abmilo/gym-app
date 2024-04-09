@@ -4,21 +4,18 @@ import { useEffect, useContext, useState } from 'react'
 import { PostScore } from '@/api/gyms';
 import Slider from '@mui/material/Slider';
 import { useRouter } from 'next/navigation'
+import ToastContext from '@/context/ToastContext';
 
 export default function GymScore({ gym_id, user_id }) {
 
     const [value, setValue] = useState(5);
     const [showScore, setShowScore] = useState(false);
-    const router = useRouter();
-
+    const { msg, type, setMsg, setType } = useContext(ToastContext);
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
 
-    useEffect(() => {
-
-    }, [])
 
     const handlePostScore = async () => {
         let data = {
@@ -28,14 +25,13 @@ export default function GymScore({ gym_id, user_id }) {
         }
         const res = await PostScore(data);
         if (res?.status === 200) {
-            console.log("success!")
-            console.log(res);
             location.reload();
-            router.push(`/gym/${gym_id}`);
-            router.refresh();
         }
         else {
-            console.log("error!")
+            setShowScore(false);
+
+            setMsg(res?.response?.data?.message || "Unknown Error");
+            setType(0);
             return;
         }
     }
@@ -68,13 +64,8 @@ export default function GymScore({ gym_id, user_id }) {
                     </button>
                 </div>
 
-
-
-
             </>) : (<>
-
                 <div className='p-10'>
-
 
                     <button
                         onClick={() => setShowScore(true)}
@@ -84,14 +75,7 @@ export default function GymScore({ gym_id, user_id }) {
                         Enter a score
                     </button>
                 </div>
-
-
-
             </>)}
-
-
-
-
 
         </>
 
