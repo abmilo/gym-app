@@ -101,7 +101,7 @@ const Friends = () => {
 
     return (
         <>
-            <div className="bg-white sm:px-6 lg:px-8 h-screen">
+            <div className="bg-white sm:px-6 lg:px-8 h-full">
                 <div className="px-4 sm:px-6 lg:px-8 pt-6" >
                     <div className="sm:flex sm:items-center">
                         <div className="sm:flex-auto">
