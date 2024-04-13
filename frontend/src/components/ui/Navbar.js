@@ -52,7 +52,7 @@ export default function Navbar() {
                             (authed ?
 
                                 loggedInNavigation.map((item) => (
-                                    <Link key={item.name} href={item.href} className="text-sm font-semibold leading-6 text-gold">
+                                    <Link key={item.name} href={item.href} className="text-sm font-black leading-6 text-gold">
                                         {item.name}
                                     </Link>
                                 ))
@@ -60,7 +60,7 @@ export default function Navbar() {
                                 :
 
                                 loggedOutNavigation.map((item) => (
-                                    <Link key={item.name} href={item.href} className="text-sm font-semibold leading-6 text-gold">
+                                    <Link key={item.name} href={item.href} className="text-sm font-black leading-6 text-gold">
                                         {item.name}
                                     </Link>
                                 ))
@@ -89,11 +89,11 @@ export default function Navbar() {
                 <div className="flex flex-1 justify-end">
                     {
                         (authed ?
-                            <div onClick={handleLogout} className="text-sm font-semibold leading-6 text-gold">
+                            <div onClick={handleLogout} className="text-sm font-black leading-6 text-gold">
                                 Log out
                             </div>
                             :
-                            <Link href="/login" className="text-sm font-semibold leading-6 text-gold">
+                            <Link href="/login" className="text-sm font-black leading-6 text-gold">
                                 Log in
                             </Link>
                         )
@@ -124,7 +124,7 @@ export default function Navbar() {
                         <div className="flex flex-1 justify-end">
                             {
                                 (authed ?
-                                    <div onClick={handleLogout} className="text-sm font-semibold leading-6 text-gold">
+                                    <div onClick={handleLogout} className="text-sm font-black leading-6 text-gold">
                                         Log out
                                     </div>
                                     :
@@ -145,7 +145,7 @@ export default function Navbar() {
                                         onClick={() => setMobileMenuOpen(false)}
                                         key={item.name}
                                         href={item.href}
-                                        className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gold hover:bg-gray-50"
+                                        className="-mx-3 block rounded-lg px-3 py-2 text-base font-black leading-7 text-gold hover:bg-gray-50"
                                     >
                                         {item.name}
                                     </Link>
@@ -158,7 +158,7 @@ export default function Navbar() {
                                         onClick={() => setMobileMenuOpen(false)}
                                         key={item.name}
                                         href={item.href}
-                                        className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gold hover:bg-gray-50"
+                                        className="-mx-3 block rounded-lg px-3 py-2 text-base font-black leading-7 text-gold hover:bg-gray-50"
                                     >
                                         {item.name}
                                     </Link>

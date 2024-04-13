@@ -10,6 +10,7 @@ import { InformationCircleIcon } from '@heroicons/react/20/solid'
 import Slider from '@mui/material/Slider';
 import { PostScore } from '@/api/gyms';
 import { useRouter } from "next/navigation";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -88,12 +89,17 @@ const Gym = ({ params }) => {
     return (
         <>
             <div className="bg-white sm:px-6 lg:px-8 h-screen">
+                <div className="pl-10 pt-5">
+                    <Link href="/" >
+                        <ArrowBackIcon color="disabled" />
+
+                    </Link>
+
+                </div>
 
 
 
-
-
-                <div className="text-royal text-3xl font-bold p-10 pb-0 ">{gym.name}</div>
+                <div className="text-royal text-3xl font-bold p-10 pb-0 pt-5 ">{gym.name}</div>
 
                 <div className="p-10">
                     {/* <h3 className="text-base font-semibold leading-6 text-gray-900">Lsast 30 days</h3> */}

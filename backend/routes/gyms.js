@@ -36,7 +36,7 @@ router.post('/postScore', async (req, res) => {
         const user = await UserModel.findOne({ email: user_id });
         if (!user) return res.status(400).json({ message: "User not found" });
 
-        let time = new Date()
+        let time = new Date();
         console.log(time.toString())
 
         let report = new ReportModel({});
@@ -136,7 +136,7 @@ router.post('/postScore', async (req, res) => {
 
 
 
-
+        console.log(time)
         console.log("saving?");
         return res.sendStatus(200);
 
