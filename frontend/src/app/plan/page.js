@@ -1,6 +1,6 @@
 'use client'
 import { useContext, useEffect, useState } from "react";
-import { getWorkoutPlan } from "@/api/workout-plan";  
+import { getWorkoutPlan } from "@/api/workout-plan";
 import AuthContext from "@/context/AuthProvider";
 
 const WorkoutPlanPage = () => {
@@ -68,7 +68,7 @@ const WorkoutPlanPage = () => {
         const res = await getWorkoutPlan(auth);
         if (res?.status === 200) {
             console.log("Workout Plans fetched successfully!");
-            setWorkoutPlans(res.data); 
+            setWorkoutPlans(res.data);
         } else {
             console.log("Failed to fetch workout plans!");
         }
@@ -76,11 +76,11 @@ const WorkoutPlanPage = () => {
 
     useEffect(() => {
         handleGetWorkoutPlan();
-    }, [auth]);  
+    }, [auth]);
 
     return (
         <>
-            <div className="bg-white sm:px-6 lg:px-8 h-screen">
+            <div className="bg-white sm:px-6 lg:px-8 h-full">
                 <div className="bg-white p-10">
                     <div className="px-4 sm:px-0">
                         <h3 className="text-lg font-semibold leading-7 text-gray-900">Workout Plans</h3>
