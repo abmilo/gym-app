@@ -1,6 +1,6 @@
 'use client'
 import { useContext, useEffect, useState } from "react"
-import { AddFriend, getUser, GetFriendData, AcceptFriend } from "@/api/users";
+import { AddFriend, getUser, GetFriendData, AcceptFriend, RemoveFriend } from "@/api/users";
 import AuthContext from "@/context/AuthProvider"
 import ToastContext from '@/context/ToastContext';
 
@@ -21,35 +21,35 @@ const Friends = () => {
     useEffect(() => {
         handleFriendData()
 
-        let list = []
-        for (person in acceptedFriends) {
-            let time = "";
-            if (person.lastAtGym) time = new Date(person.lastAtGym).toDateString();
-            else time = "N/A"
-            list.push(
+        // let list = []
+        // for (person in acceptedFriends) {
+        //     let time = "";
+        //     if (person.lastAtGym) time = new Date(person.lastAtGym).toDateString();
+        //     else time = "N/A"
+        //     list.push(
 
-                <tr key={person.email}>
-                    <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
-                        {person.email}
-                    </td>
-                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{time}</td>
-                    <td>
-                        <button
-                            onClick={() => {
-                                handleAcceptRequest(person.email)
-                            }}
-                            type="button"
-                            className="block rounded-md bg-royal px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-gold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
-                        >
-                            Accept
-                        </button>
-                    </td>
-                </tr>
+        //         <tr key={person.email}>
+        //             <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
+        //                 {person.email}
+        //             </td>
+        //             <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{time}</td>
+        //             <td>
+        //                 <button
+        //                     onClick={() => {
+        //                         handleAcceptRequest(person.email)
+        //                     }}
+        //                     type="button"
+        //                     className="block rounded-md bg-royal px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-gold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
+        //                 >
+        //                     Accept
+        //                 </button>
+        //             </td>
+        //         </tr>
 
-            )
-        }
-        setAcceptedFriends(list);
-        console.log(list)
+        //     )
+        // }
+        // setAcceptedFriends(list);
+        // console.log(list)
 
     }, [auth])
 
@@ -83,6 +83,7 @@ const Friends = () => {
         const res = await AddFriend(data, auth);
         if (res?.status === 200) {
             handleGetUser(auth);
+            setFriendEmail("");
             setMsg(res?.response?.data?.message || "Success");
             setType(1)
 
@@ -118,6 +119,24 @@ const Friends = () => {
             reciever: auth.email
         }
         const res = await AcceptFriend(data, auth)
+        if (res?.status === 200) {
+            setMsg(res?.response?.data?.message || "Success");
+            setType(1)
+            handleGetUser();
+        }
+        else {
+            setMsg(res?.response?.data?.message || "Unknown Error");
+            setType(0)
+            return;
+        }
+    }
+
+    const handleRemoveRequest = async (email) => {
+        let data = {
+            sender: email,
+            reciever: auth.email
+        }
+        const res = await RemoveFriend(data, auth)
         if (res?.status === 200) {
             setMsg(res?.response?.data?.message || "Success");
             setType(1)
@@ -185,11 +204,11 @@ const Friends = () => {
                                             <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">
                                                 Email
                                             </th>
-                                            <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                            <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">
                                                 Last At Gym
                                             </th>
-                                            <th scope="col" className="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">
-
+                                            <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">
+                                                Remove Friend
                                             </th>
 
                                         </tr>
@@ -204,7 +223,18 @@ const Friends = () => {
                                                     <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
                                                         {person.email}
                                                     </td>
-                                                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{person.lastAtGym || "N/A"}</td>
+                                                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{"N/A"}</td>
+                                                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                                        <button
+                                                            onClick={() => {
+                                                                handleRemoveRequest(person.email)
+                                                            }}
+                                                            type="button"
+                                                            className="block rounded-md bg-royal px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-gold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
+                                                        >
+                                                            Remove
+                                                        </button>
+                                                    </td>
 
                                                 </tr>
                                                 // person

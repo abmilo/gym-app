@@ -83,8 +83,8 @@ export default function Navbar() {
                 <Link href="/" className="-m-1.5 p-1.5">
                     <span className="sr-only">Your Company</span>
                     <img
-                        className="h-8 w-auto"
-                        src="/scriptLogo.png"
+                        className="h-12 w-auto"
+                        src="/logo_no_text.png"
                         alt=""
                     />                </Link>
                 <div className="flex flex-1 justify-end">
@@ -118,10 +118,11 @@ export default function Navbar() {
                         <Link href="/" className="-m-1.5 p-1.5" onClick={() => setMobileMenuOpen(false)}>
                             <span className="sr-only">Your Company</span>
                             <img
-                                className="h-8 w-auto"
-                                src="/scriptLogo.png"
+                                className="h-12 w-auto"
+                                src="/logo_no_text.png"
                                 alt=""
-                            />                </Link>
+                            />
+                        </Link>
                         <div className="flex flex-1 justify-end">
                             {
                                 (authed ?
@@ -151,9 +152,7 @@ export default function Navbar() {
                                         {item.name}
                                     </Link>
                                 ))
-
                                 :
-
                                 loggedOutNavigation.map((item) => (
                                     <Link
                                         onClick={() => setMobileMenuOpen(false)}
@@ -164,11 +163,8 @@ export default function Navbar() {
                                         {item.name}
                                     </Link>
                                 ))
-
                             )
                         }
-
-
                     </div>
                 </Dialog.Panel>
             </Dialog>

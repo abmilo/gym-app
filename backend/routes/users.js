@@ -266,6 +266,8 @@ router.get('/logout', async (req, res) => {
 router.post("/addfriend", verifyJWT, async (req, res) => {
     const { sender, reciever } = req.body;
 
+    if (sender == reciever) return res.status(400).json({ message: "Cannot Friend Self" });
+
     if (!reciever) return res.status(400).json({ message: "Friendee not found" });
 
     // check existance
@@ -286,7 +288,7 @@ router.post("/addfriend", verifyJWT, async (req, res) => {
         }
     })
 
-    if (alreadyFriends) res.status(400).json({ message: "Friend Request Already Sent" });
+    if (alreadyFriends) return res.status(400).json({ message: "Friend Request Already Sent" });
 
 
     friendee?.friends?.push({
@@ -298,6 +300,67 @@ router.post("/addfriend", verifyJWT, async (req, res) => {
         email: friendee.email,
         status: "Sent"
     })
+
+    friendee.save().then(() => {
+        // res.status(201).json({ message: "New User Successfully Saved" });
+    },
+        (err) => {
+            const errs = err?.errors
+            const keys = Object.keys(err?.errors);
+            const msg = errs[keys[0]]?.properties?.message;
+            res.status(err.status || 400).json({ message: msg || err?.message });
+            return;
+
+        })
+
+    friender.save().then(() => {
+        res.status(200).json({ message: "Friend Request Sent" });
+    },
+        (err) => {
+            const errs = err?.errors
+            const keys = Object.keys(err?.errors);
+            const msg = errs[keys[0]]?.properties?.message;
+            res.status(err.status || 400).json({ message: msg || err?.message });
+            return;
+
+        })
+
+
+})
+
+
+
+router.post("/removeFriend", verifyJWT, async (req, res) => {
+    const { sender, reciever } = req.body;
+
+    // check existance
+    const friender = await UserModel.findOne({ email: sender });
+    if (!friender) return res.status(400).json({ message: "Friender not found" });
+
+    const friendee = await UserModel.findOne({ email: reciever });
+    if (!friendee) return res.status(400).json({ message: "Friendee not found" });
+
+    // check if already friends
+    let i = 0;
+    friendee?.friends.forEach((friend) => {
+        if (friender?.email == friend.email) {
+            console.log(friender.email)
+            console.log(friend.email)
+            friendee.friends.splice(i, 1);
+            console.log(friendee?.friends)
+        }
+        i++;
+    })
+
+    friender?.friends.forEach((friend) => {
+        if (friendee?.email == friend.email) {
+            friender.friends.splice(i, 1);
+        }
+        i++;
+    })
+
+
+
 
     friendee.save().then(() => {
         // res.status(201).json({ message: "New User Successfully Saved" });

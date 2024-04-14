@@ -150,6 +150,28 @@ export const AddFriend = async (data, auth) => {
 
 };
 
+export const RemoveFriend = async (data, auth) => {
+    const axiosPrivate = AxioPrivate(auth);
+
+    try {
+        const response = await axiosPrivate.post(
+            "/users/removeFriend",
+            JSON.stringify(data),
+            {
+                withCredentials: true,
+            }
+        );
+
+        return response;
+
+    } catch (err) {
+        console.log(err)
+        return err;
+
+    }
+
+};
+
 export const GetFriendData = async (auth) => {
     const axiosPrivate = AxioPrivate(auth);
     try {
