@@ -20,6 +20,37 @@ const Friends = () => {
 
     useEffect(() => {
         handleFriendData()
+
+        let list = []
+        for (person in acceptedFriends) {
+            let time = "";
+            if (person.lastAtGym) time = new Date(person.lastAtGym).toDateString();
+            else time = "N/A"
+            list.push(
+
+                <tr key={person.email}>
+                    <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
+                        {person.email}
+                    </td>
+                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{time}</td>
+                    <td>
+                        <button
+                            onClick={() => {
+                                handleAcceptRequest(person.email)
+                            }}
+                            type="button"
+                            className="block rounded-md bg-royal px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-gold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
+                        >
+                            Accept
+                        </button>
+                    </td>
+                </tr>
+
+            )
+        }
+        setAcceptedFriends(list);
+        console.log(list)
+
     }, [auth])
 
 
@@ -101,11 +132,11 @@ const Friends = () => {
 
     return (
         <>
-            <div className="bg-white sm:px-6 lg:px-8 h-screen">
+            <div className="bg-white sm:px-6 lg:px-8 h-full">
                 <div className="px-4 sm:px-6 lg:px-8 pt-6" >
                     <div className="sm:flex sm:items-center">
                         <div className="sm:flex-auto">
-                            {/* <h1 className="text-3xl font-semibold leading-5 text-gold">Friends</h1> */ }
+                            {/* <h1 className="text-3xl font-semibold leading-5 text-gold">Friends</h1> */}
                             {/* <p className="mt-2 text-xs text-gray-700">
                                 A list of all the friends in your account including  those requested.
                             </p> */}
@@ -117,9 +148,9 @@ const Friends = () => {
                                     Add a friend (by "pitt.edu" email)
                                 </label>
                                 <input
-                                    onChange={ (event) => {
+                                    onChange={(event) => {
                                         setFriendEmail(event?.target?.value)
-                                    } }
+                                    }}
                                     type="email"
                                     name="email"
                                     id="email"
@@ -128,7 +159,7 @@ const Friends = () => {
                                 />
                             </div>
                             <button
-                                onClick={ handleAddFriend }
+                                onClick={handleAddFriend}
                                 type="button"
                                 className="block rounded-md bg-royal px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-gold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
                             >
@@ -149,7 +180,7 @@ const Friends = () => {
                         <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                             <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
                                 <table className="min-w-full divide-y divide-gray-300">
-                                    { acceptedFriends.length > 0 && <thead>
+                                    {acceptedFriends.length > 0 && <thead>
                                         <tr>
                                             <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">
                                                 Email
@@ -162,21 +193,23 @@ const Friends = () => {
                                             </th>
 
                                         </tr>
-                                    </thead> }
+                                    </thead>}
                                     <tbody className="divide-y divide-gray-200">
-                                        { acceptedFriends.length === 0 ?
+                                        {acceptedFriends.length === 0 ?
                                             <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gold sm:pl-0">
                                                 No friends
                                             </th>
                                             : acceptedFriends.map((person) => (
-                                                <tr key={ person.email }>
+                                                <tr key={person.email}>
                                                     <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
-                                                        { person.email }
+                                                        {person.email}
                                                     </td>
-                                                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{ person.status || "N/A" }</td>
+                                                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{person.lastAtGym || "N/A"}</td>
 
                                                 </tr>
-                                            )) }
+                                                // person
+
+                                            ))}
                                     </tbody>
                                 </table>
                             </div>
@@ -204,7 +237,7 @@ const Friends = () => {
 
 
 
-                                    { recievedFriends.length > 0 && <thead>
+                                    {recievedFriends.length > 0 && <thead>
                                         <tr>
                                             <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">
                                                 Email
@@ -217,24 +250,24 @@ const Friends = () => {
                                             </th>
 
                                         </tr>
-                                    </thead> }
+                                    </thead>}
 
                                     <tbody className="divide-y divide-gray-200">
-                                        { recievedFriends.length === 0 ?
+                                        {recievedFriends.length === 0 ?
                                             <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gold sm:pl-0">
                                                 No Waiting Requests
                                             </th>
                                             : recievedFriends.map((person) => (
-                                                <tr key={ person.email }>
+                                                <tr key={person.email}>
                                                     <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
-                                                        { person.email }
+                                                        {person.email}
                                                     </td>
-                                                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{ person.status || "N/A" }</td>
+                                                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{person.status || "N/A"}</td>
                                                     <td>
                                                         <button
-                                                            onClick={ () => {
+                                                            onClick={() => {
                                                                 handleAcceptRequest(person.email)
-                                                            } }
+                                                            }}
                                                             type="button"
                                                             className="block rounded-md bg-royal px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-gold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
                                                         >
@@ -242,7 +275,7 @@ const Friends = () => {
                                                         </button>
                                                     </td>
                                                 </tr>
-                                            )) }
+                                            ))}
                                     </tbody>
                                 </table>
                             </div>
@@ -265,7 +298,7 @@ const Friends = () => {
                         <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                             <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
                                 <table className="min-w-full divide-y divide-gray-300">
-                                    { sentFriends.length > 0 && <thead>
+                                    {sentFriends.length > 0 && <thead>
                                         <tr>
                                             <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">
                                                 Email
@@ -278,21 +311,21 @@ const Friends = () => {
                                             </th>
 
                                         </tr>
-                                    </thead> }
+                                    </thead>}
                                     <tbody className="divide-y divide-gray-200">
-                                        { sentFriends.length === 0 ? <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gold sm:pl-0">
+                                        {sentFriends.length === 0 ? <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gold sm:pl-0">
                                             No Waiting Requests
                                         </th> : sentFriends.map((person) => (
-                                            <tr key={ person.email }>
+                                            <tr key={person.email}>
                                                 <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
-                                                    { person.email }
+                                                    {person.email}
                                                 </td>
-                                                <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{ person.status || "N/A" }</td>
+                                                <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{person.status || "N/A"}</td>
                                                 <td>
 
                                                 </td>
                                             </tr>
-                                        )) }
+                                        ))}
 
                                     </tbody>
                                 </table>

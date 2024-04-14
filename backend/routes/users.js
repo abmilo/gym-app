@@ -6,9 +6,6 @@ const UserModel = require("../models/UserModel")
 const bcrypt = require("bcrypt");
 const jwt = require('jsonwebtoken');
 const verifyJWT = require("../middleware/verifyJWT");
-// var Filter = require('bad-words'),
-//     filter = new Filter();
-
 
 
 router.post('/login', async (req, res) => {
@@ -55,9 +52,7 @@ router.post('/login', async (req, res) => {
                 console.log(err);
                 res.status(err.status || 400).json({ message: err.message });
                 return;
-
             })
-
 
         res.cookie("refreshjwt", refreshToken, {
             httpOnly: true,
@@ -88,8 +83,6 @@ router.post('/login', async (req, res) => {
         console.log(err);
         res.sendStatus(400);
     }
-
-
 });
 
 
@@ -123,7 +116,7 @@ router.post('/register', async (req, res) => {
         const newUser = new UserModel({
             email: email,
             password: hashedPwd,
-            joined: new Date(),
+            joined: new Date().toDateString(),
             uuid: short.generate()
         });
 
