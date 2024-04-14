@@ -14,7 +14,7 @@ Maxm Akins, Robby Gold, Sreekar Pamujula, Chang Li, and Ibrahim Miloua
 
 ## 3. Next.js (frontend)
 
-1. Open new termal
+1. Open new terminal
 2. Navigate to the "frontend" folder
 3. If first use after pulling, run `npm i`
    Run `npm run dev` and the Next.js server should start and be accessible at http://localhost:3000
@@ -35,6 +35,3 @@ Maxm Akins, Robby Gold, Sreekar Pamujula, Chang Li, and Ibrahim Miloua
 
 
 
-
-
-git test
