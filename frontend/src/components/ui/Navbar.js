@@ -15,6 +15,7 @@ const loggedInNavigation = [
     { name: 'Home', href: '/' },
     { name: 'Friends', href: '/friends' },
     { name: 'Profile', href: '/profile' },
+    { name: 'Workout Plan', href: '/plan' }
 ]
 
 export default function Navbar() {
