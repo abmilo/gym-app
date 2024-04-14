@@ -15,13 +15,13 @@ export default function WorkoutPlanLayout({ children }) {
             setAuthed(true);
         } else {
             setAuthed(false);
-            redirect('/login');  
+            redirect('/login');
         }
     }, [auth]);
 
     return (
         <>
-            {authed && children}  
+            {authed && children}
         </>
     );
 }

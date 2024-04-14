@@ -20,7 +20,7 @@ export default function Layout({ children }) {
     // </Auth0Provider>
     <>
 
-      { children }
+      {children}
 
     </>
 
