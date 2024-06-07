@@ -1,4 +1,4 @@
-# group8_1530
+# Gym-app
 
 ##### This is the README for '23-'24 Spring Semester CS 1530 - Group 8 (Fitness and Wellness)
 
