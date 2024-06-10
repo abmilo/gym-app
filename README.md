@@ -1,3 +1,3 @@
 # Gym-app
 
-Ibrahim Miloua, Maxm Akins, Robby Gold, Sreekar Pamujula, & Chang Li
+By Ibrahim Miloua in CS 1530.
